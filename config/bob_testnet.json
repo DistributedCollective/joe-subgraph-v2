@@ -1,0 +1,8 @@
+{
+    "network": "optimism-sepolia",
+    "lbfactory_address": "0x603764D0D819C50a6A9aab009410ABAC6482C874",
+    "joe_dex_lens_address": "0x0A5077D8dc51e27Ad536847b0CF558165BA9AD1b",
+    "joe_dex_lens_usd_decimals": 18,
+    "wavax_address": "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
+    "start_block": 12798450
+}

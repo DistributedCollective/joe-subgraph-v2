@@ -2,7 +2,7 @@ version: "3"
 services:
   graph-node:
     container_name: joe_indexer
-    image: graphprotocol/graph-node:v0.27.0
+    image: graphprotocol/graph-node:v0.35.1
     ports:
       - "8000:8000"
       - "8001:8001"
@@ -22,11 +22,11 @@ services:
       GRAPH_NO_EIP_1898_SUPPORT: 1
       GRAPH_ALLOW_NON_DETERMINISTIC_IPFS: 1
       GRAPH_ALLOW_NON_DETERMINISTIC_FULLTEXT_SEARCH: 1
-      ethereum: "fuji:https://api.avax-test.network/ext/bc/C/rpc"
+      ethereum: "optimism-sepolia:https://testnet.rpc.gobob.xyz"
       RUST_LOG: info
   ipfs:
     container_name: ipfs
-    image: ipfs/go-ipfs:v0.4.23
+    image: ipfs/go-ipfs:v0.11.0
     ports:
       - "5001:5001"
     volumes:
@@ -41,5 +41,7 @@ services:
       POSTGRES_USER: graph-node
       POSTGRES_PASSWORD: let-me-in
       POSTGRES_DB: graph-node
+      # PGDATA: "/var/lib/postgresql/data"
+      POSTGRES_INITDB_ARGS: '--encoding=UTF-8 --lc-collate=C --lc-ctype=C'
     volumes:
       - ./graph_data/postgres:/var/lib/postgresql/data
