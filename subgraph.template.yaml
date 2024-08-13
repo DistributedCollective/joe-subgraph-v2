@@ -84,17 +84,16 @@ dataSources:
         - name: DexLens
           file: ./abis/DexLens.json
       eventHandlers:
-        # - event: Swap(indexed address,indexed address,indexed uint256,bool,uint256,uint256,uint256,uint256)
         - event: Swap(indexed address,indexed address,uint24,bytes32,bytes32,uint24,bytes32,bytes32)
           handler: handleSwap
       #   - event: FlashLoan(indexed address,indexed address,address,uint256,uint256)
       #     handler: handleFlashLoan
       #   - event: CompositionFee(indexed address,indexed address,indexed uint256,uint256,uint256)
       #     handler: handleCompositionFee
-      #   - event: DepositedToBin(indexed address,indexed address,indexed uint256,uint256,uint256)
-      #     handler: handleLiquidityAdded
-      #   - event: WithdrawnFromBin(indexed address,indexed address,indexed uint256,uint256,uint256)
-      #     handler: handleLiquidityRemoved
+        - event: DepositedToBins(indexed address,indexed address,uint256[],bytes32[])
+          handler: handleLiquidityAdded
+        - event: WithdrawnFromBins(indexed address,indexed address,uint256[],bytes32[])
+          handler: handleLiquidityRemoved
       #   - event: FeesCollected(indexed address,indexed address,uint256,uint256)
       #     handler: handleFeesCollected
       #   - event: ProtocolFeesCollected(indexed address,indexed address,uint256,uint256)
