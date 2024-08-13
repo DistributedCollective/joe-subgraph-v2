@@ -3,3 +3,9 @@ node_modules/
 generated/
 build/
 graph_data/
+data/
+
+.env
+.env.dev
+subgraph.yaml
+docker-compose.yml

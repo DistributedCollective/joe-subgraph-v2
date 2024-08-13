@@ -22,17 +22,17 @@ services:
       postgres_db: postgres
       ipfs: 'ipfs:5001'
       # Change next line if you want to connect to a different JSON-RPC endpoint
-      ethereum: 'optimism-sepolia:https://testnet.rpc.gobob.xyz'
-      GRAPH_LOG: 'debug'
-      # GRAPH_GRAPHQL_QUERY_TIMEOUT: ''
-      # GRAPH_SQL_STATEMENT_TIMEOUT: ''
-      # GRAPH_GRAPHQL_MAX_DEPTH: ''
-      # GRAPH_GRAPHQL_MAX_COMPLEXITY: ''
+      ethereum: '{{network}}:{{& node.address}}'
+      GRAPH_LOG: '{{node.log_level}}'
+      # GRAPH_GRAPHQL_QUERY_TIMEOUT: '{{node.graph_graphql_query_timeout}}'
+      # GRAPH_SQL_STATEMENT_TIMEOUT: '{{node.graph_sql_statement_timeout}}'
+      # GRAPH_GRAPHQL_MAX_DEPTH: '{{node.graph_graphql_max_depth}}'
+      # GRAPH_GRAPHQL_MAX_COMPLEXITY: '{{node.graph_graphql_max_complexity}}'
       GRAPH_ETH_CALL_BY_NUMBER: 1
       GRAPH_NO_EIP_1898_SUPPORT: 1
       GRAPH_ALLOW_NON_DETERMINISTIC_IPFS: 1
       GRAPH_ALLOW_NON_DETERMINISTIC_FULLTEXT_SEARCH: 1
-    restart: ''
+    restart: '{{node.restart}}'
   ipfs:
     image: ipfs/go-ipfs:latest
     ports:

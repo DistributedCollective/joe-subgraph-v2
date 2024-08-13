@@ -85,6 +85,7 @@ import { WithdrawnFromBins } from "../generated/LBFactory/LBPair";
 // );
 
 export function handleSwap(event: SwapEvent): void {
+  log.error("handleSwap: {}", [event.address.toHexString()]);
   const lbPair = loadLbPair(event.address);
 
   if (!lbPair) {
@@ -651,6 +652,8 @@ export function handleLiquidityAdded(event: DepositedToBins): void {
   const lbPair = loadLbPair(event.address);
   const lbFactory = loadLBFactory();
 
+  log.error("handleLiquidityAdded: {}", [event.address.toHexString()]);
+  
   if (!lbPair) {
     log.error(
       "[handleLiquidityAdded] returning because LBPair not detected: {} ",
@@ -789,6 +792,8 @@ export function handleLiquidityAdded(event: DepositedToBins): void {
 export function handleLiquidityRemoved(event: WithdrawnFromBins): void {
   const lbPair = loadLbPair(event.address);
   const lbFactory = loadLBFactory();
+
+  log.error("handleLiquidityRemoved: {}", [event.address.toHexString()]);
 
   if (!lbPair) {
     return;

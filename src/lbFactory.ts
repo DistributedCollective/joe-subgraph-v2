@@ -25,6 +25,7 @@ export function handleFlashLoanFeeSet(event: FlashLoanFeeSet): void {
 }
 
 export function handleLBPairCreated(event: LBPairCreated): void {
+  log.error("LBPairCreated: {}", [event.params.LBPair.toHexString()]);
   loadBundle();
   const lbPair = createLBPair(event.params.LBPair, event.block);
 

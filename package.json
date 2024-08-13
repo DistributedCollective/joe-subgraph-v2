@@ -3,14 +3,17 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "prepare:bob_testnet": "mustache config/bob_testnet.json src/constants/index.template.ts > src/constants/index.ts && mustache config/bob_testnet.json subgraph.template.yaml > subgraph.bob_testnet.yaml",
-    "codegen:bob_testnet": "graph codegen subgraph.bob_testnet.yaml",
-    "build:bob_testnet": "graph build subgraph.bob_testnet.yaml",
-    "deploy:bob_testnet": "graph deploy --node https://api.thegraph.com/deploy/ traderjoe-xyz/joe-v2 subgraph.avax.yaml",
+    "codegen": "graph codegen",
+    "build": "graph build",
     "create-local": "graph create joe-v2 --node http://localhost:8020/",
     "remove-local": "graph remove joe-v2 --node http://localhost:8020/",
-    "deploy-local": "graph deploy joe-v2 ./subgraph.bob_testnet.yaml --node http://localhost:8020/ --ipfs http://localhost:5001 -l 0.0.0 ",
-    "start:node": "rm -rf ./graph_data && docker compose up -d"
+    "deploy-local": "graph deploy joe-v2 --node http://localhost:8020/ --ipfs http://localhost:5001",
+    "cd": "npm run create-local && npm run deploy-local -- --version-label",
+    "dev": "npm run codegen && npm run deploy-local -- --version-label v0.0.1",
+    "prepare:BOB:testnet": "sh ./scripts/prepare_testnet.sh",
+    "prepare:BOB:mainnet": "sh ./scripts/prepare_mainnet.sh",
+    "dev:up": "docker compose --env-file .env.dev up -d",
+    "dev:down": "docker compose --env-file .env.dev down"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.80.0",

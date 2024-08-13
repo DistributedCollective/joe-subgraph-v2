@@ -1,0 +1,12 @@
+{
+  "network": "optimism-sepolia",
+  "node": {
+    "address": "https://testnet.rpc.gobob.xyz",
+    "log_level": "debug"
+  },
+  "lbfactory_address": "0x603764D0D819C50a6A9aab009410ABAC6482C874",
+  "joe_dex_lens_address": "0x0A5077D8dc51e27Ad536847b0CF558165BA9AD1b",
+  "joe_dex_lens_usd_decimals": 18,
+  "wavax_address": "0x69FE5cEC81D5eF92600c1A0dB1F11986AB3758Ab",
+  "start_block": 12798450
+}
