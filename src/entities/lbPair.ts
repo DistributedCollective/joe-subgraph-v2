@@ -23,25 +23,30 @@ export function createLBPair(
   block: ethereum.Block
 ): LBPair | null {
   const lbPairContract = LBPairABI.bind(lbPairAddr);
-  const tokenXCall = lbPairContract.try_tokenX();
-  const tokenYCall = lbPairContract.try_tokenY();
+  const tokenXCall = lbPairContract.try_getTokenX();
+  const tokenYCall = lbPairContract.try_getTokenY();
   if (tokenXCall.reverted || tokenYCall.reverted) {
     return null;
   }
 
-  const lbPairReservesAndIdCall = lbPairContract.try_getReservesAndId();
-  if (lbPairReservesAndIdCall.reverted) {
+  const lbPairActiveIdCall = lbPairContract.try_getActiveId();
+  if (lbPairActiveIdCall.reverted) {
     return null;
   }
 
-  const lbPairFeeParamsCall = lbPairContract.try_feeParameters();
+  const lbPairFeeParamsCall = lbPairContract.try_getStaticFeeParameters();
   if (lbPairFeeParamsCall.reverted) {
     return null;
   }
 
-  const activeId = lbPairReservesAndIdCall.value.getActiveId();
-  const binStep = BigInt.fromI32(lbPairFeeParamsCall.value.binStep);
-  const baseFactor = BigInt.fromI32(lbPairFeeParamsCall.value.baseFactor);
+  const binStepCall = lbPairContract.try_getBinStep();
+  if (binStepCall.reverted) {
+    return null;
+  }
+
+  const activeId = BigInt.fromI32(lbPairActiveIdCall.value);
+  const binStep = BigInt.fromI32(binStepCall.value);
+  const baseFactor = BigInt.fromI32(lbPairFeeParamsCall.value.getBaseFactor());
 
   // base fee in 1e18 precision: baseFactor * binStep * 1e10
   const baseFee = binStep // 4 decimals

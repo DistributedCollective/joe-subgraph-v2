@@ -23,7 +23,8 @@ services:
       GRAPH_ALLOW_NON_DETERMINISTIC_IPFS: 1
       GRAPH_ALLOW_NON_DETERMINISTIC_FULLTEXT_SEARCH: 1
       ethereum: "optimism-sepolia:https://testnet.rpc.gobob.xyz"
-      RUST_LOG: info
+      GRAPH_LOG: warn
+      RUST_LOG: warn
   ipfs:
     container_name: ipfs
     image: ipfs/go-ipfs:v0.11.0

@@ -23,4 +23,4 @@ export const JOE_DEX_LENS_ADDRESS = Address.fromString('0x0A5077D8dc51e27Ad53684
 
 export const JOE_DEX_LENS_USD_DECIMALS = BigDecimal.fromString("1e18");
 
-export const WAVAX_ADDRESS = Address.fromString('0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c');
+export const WAVAX_ADDRESS = Address.fromString('0x69FE5cEC81D5eF92600c1A0dB1F11986AB3758Ab');

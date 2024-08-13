@@ -5,7 +5,7 @@ import {
   LBPairIgnoredStateChanged,
   FeeParametersSet,
 } from "../generated/LBFactory/LBFactory";
-import { BigDecimal } from "@graphprotocol/graph-ts";
+import { BigDecimal, log } from "@graphprotocol/graph-ts";
 import { LBPairParameterSet } from "../generated/schema";
 import { loadLBFactory, createLBPair, loadBundle } from "./entities";
 import { BIG_INT_ONE, BIG_INT_ZERO } from "./constants";

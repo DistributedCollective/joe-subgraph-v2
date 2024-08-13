@@ -9,7 +9,7 @@
     "deploy:bob_testnet": "graph deploy --node https://api.thegraph.com/deploy/ traderjoe-xyz/joe-v2 subgraph.avax.yaml",
     "create-local": "graph create joe-v2 --node http://localhost:8020/",
     "remove-local": "graph remove joe-v2 --node http://localhost:8020/",
-    "deploy-local": "graph deploy joe-v2 --node http://localhost:8020/ --ipfs http://localhost:5001 -l 0.0.0 ",
+    "deploy-local": "graph deploy joe-v2 ./subgraph.bob_testnet.yaml --node http://localhost:8020/ --ipfs http://localhost:5001 -l 0.0.0 ",
     "start:node": "rm -rf ./graph_data && docker compose up -d"
   },
   "dependencies": {
