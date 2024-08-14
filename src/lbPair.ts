@@ -6,7 +6,6 @@ import {
   FlashLoan,
   DepositedToBins,
   // CompositionFee,
-  // WithdrawnFromBin,
   // FeesCollected,
   // ProtocolFeesCollected,
   // TransferSingle,
@@ -57,32 +56,8 @@ import {
   updateTokensDerivedAvax,
   safeDiv,
 } from "./utils";
-import { WithdrawnFromBins } from "../generated/LBFactory/LBPair";
+import { CompositionFees, WithdrawnFromBins } from "../generated/LBFactory/LBPair";
 
-// old event
-// event Swap(
-//   address indexed sender,
-//   address indexed recipient,
-//   uint256 indexed id,
-//   bool swapForY,
-//   uint256 amountIn,
-//   uint256 amountOut,
-//   uint256 volatilityAccumulated,
-//   uint256 fees
-// );
-
-
-// new event
-// event Swap(
-//   address indexed sender,
-//   address indexed to,
-//   uint24 id,
-//   bytes32 amountsIn,
-//   bytes32 amountsOut,
-//   uint24 volatilityAccumulator,
-//   bytes32 totalFees,
-//   bytes32 protocolFees
-// );
 
 export function handleSwap(event: SwapEvent): void {
   log.error("handleSwap: {}", [event.address.toHexString()]);
@@ -396,257 +371,268 @@ export function handleSwap(event: SwapEvent): void {
 }
 
 export function handleFlashLoan(event: FlashLoan): void {
-  // const lbPair = loadLbPair(event.address);
+  const lbPair = loadLbPair(event.address);
 
-  // if (!lbPair) {
-  //   return;
-  // }
+  if (!lbPair) {
+    return;
+  }
 
-  // // update pricing
-  // updateAvaxInUsdPricing();
-  // updateTokensDerivedAvax(lbPair, null);
+  // update pricing
+  updateAvaxInUsdPricing();
+  updateTokensDerivedAvax(lbPair, null);
 
-  // // price bundle
-  // const bundle = loadBundle();
+  // price bundle
+  const bundle = loadBundle();
 
-  // const tokenX = loadToken(Address.fromString(lbPair.tokenX));
-  // const tokenY = loadToken(Address.fromString(lbPair.tokenY));
+  const tokenX = loadToken(Address.fromString(lbPair.tokenX));
+  const tokenY = loadToken(Address.fromString(lbPair.tokenY));
 
-  // const isTokenX = Address.fromString(lbPair.tokenX).equals(event.params.token);
-  // const token = isTokenX ? tokenX : tokenY;
+  log.warning("handleFlashLoan: {}", [event.address.toHexString()]);
 
-  // const amount = formatTokenAmountByDecimals(
-  //   event.params.amount,
-  //   token.decimals
-  // );
-  // const fees = formatTokenAmountByDecimals(event.params.fee, token.decimals);
-  // const feesUSD = fees.times(token.derivedAVAX.times(bundle.avaxPriceUSD));
+  /*
 
-  // const lbFactory = loadLBFactory();
-  // lbFactory.txCount = lbFactory.txCount.plus(BIG_INT_ONE);
-  // lbFactory.feesUSD = lbFactory.feesUSD.plus(feesUSD);
-  // lbFactory.feesAVAX = safeDiv(lbFactory.feesUSD, bundle.avaxPriceUSD);
-  // lbFactory.save();
+  const isTokenX = Address.fromString(lbPair.tokenX).equals(event.params.token);
+  const token = isTokenX ? tokenX : tokenY;
 
-  // const traderJoeHourData = loadTraderJoeHourData(event.block.timestamp, true);
-  // traderJoeHourData.feesUSD = traderJoeHourData.feesUSD.plus(feesUSD);
-  // traderJoeHourData.save();
+  const amount = formatTokenAmountByDecimals(
+    event.params.amount,
+    token.decimals
+  );
+  const fees = formatTokenAmountByDecimals(event.params.fee, token.decimals);
+  const feesUSD = fees.times(token.derivedAVAX.times(bundle.avaxPriceUSD));
 
-  // const traderJoeDayData = loadTraderJoeDayData(event.block.timestamp, true);
-  // traderJoeDayData.feesUSD = traderJoeDayData.feesUSD.plus(feesUSD);
-  // traderJoeDayData.save();
+  const lbFactory = loadLBFactory();
+  lbFactory.txCount = lbFactory.txCount.plus(BIG_INT_ONE);
+  lbFactory.feesUSD = lbFactory.feesUSD.plus(feesUSD);
+  lbFactory.feesAVAX = safeDiv(lbFactory.feesUSD, bundle.avaxPriceUSD);
+  lbFactory.save();
 
-  // const tokenHourData = loadTokenHourData(
-  //   event.block.timestamp,
-  //   token as Token,
-  //   true
-  // );
-  // const tokenDayData = loadTokenDayData(
-  //   event.block.timestamp,
-  //   token as Token,
-  //   true
-  // );
-  // if (event.params.amount.gt(BIG_INT_ZERO)) {
-  //   token.txCount = token.txCount.plus(BIG_INT_ONE);
-  // } else {
-  //   tokenHourData.txCount = tokenHourData.txCount.minus(BIG_INT_ONE);
-  //   tokenDayData.txCount = tokenDayData.txCount.minus(BIG_INT_ONE);
-  // }
-  // token.feesUSD = token.feesUSD.plus(feesUSD);
-  // tokenHourData.feesUSD = tokenHourData.feesUSD.plus(feesUSD);
-  // tokenDayData.feesUSD = tokenDayData.feesUSD.plus(feesUSD);
-  // token.save();
-  // tokenHourData.save();
-  // tokenDayData.save();
+  const traderJoeHourData = loadTraderJoeHourData(event.block.timestamp, true);
+  traderJoeHourData.feesUSD = traderJoeHourData.feesUSD.plus(feesUSD);
+  traderJoeHourData.save();
 
-  // lbPair.txCount = lbPair.txCount.plus(BIG_INT_ONE);
-  // if (isTokenX) {
-  //   lbPair.feesTokenX = lbPair.feesTokenX.plus(fees);
-  // } else {
-  //   lbPair.feesTokenY = lbPair.feesTokenY.plus(fees);
-  // }
-  // lbPair.feesUSD = lbPair.feesUSD.plus(feesUSD);
-  // lbPair.save();
+  const traderJoeDayData = loadTraderJoeDayData(event.block.timestamp, true);
+  traderJoeDayData.feesUSD = traderJoeDayData.feesUSD.plus(feesUSD);
+  traderJoeDayData.save();
 
-  // const lbPairHourData = loadLBPairHourData(
-  //   event.block.timestamp,
-  //   lbPair as LBPair,
-  //   true
-  // );
-  // lbPairHourData.feesUSD = lbPairHourData.feesUSD.plus(feesUSD);
-  // lbPairHourData.save();
+  const tokenHourData = loadTokenHourData(
+    event.block.timestamp,
+    token as Token,
+    true
+  );
+  const tokenDayData = loadTokenDayData(
+    event.block.timestamp,
+    token as Token,
+    true
+  );
+  if (event.params.amount.gt(BIG_INT_ZERO)) {
+    token.txCount = token.txCount.plus(BIG_INT_ONE);
+  } else {
+    tokenHourData.txCount = tokenHourData.txCount.minus(BIG_INT_ONE);
+    tokenDayData.txCount = tokenDayData.txCount.minus(BIG_INT_ONE);
+  }
+  token.feesUSD = token.feesUSD.plus(feesUSD);
+  tokenHourData.feesUSD = tokenHourData.feesUSD.plus(feesUSD);
+  tokenDayData.feesUSD = tokenDayData.feesUSD.plus(feesUSD);
+  token.save();
+  tokenHourData.save();
+  tokenDayData.save();
 
-  // const lbPairDayData = loadLBPairDayData(
-  //   event.block.timestamp,
-  //   lbPair as LBPair,
-  //   true
-  // );
-  // lbPairDayData.feesUSD = lbPairDayData.feesUSD.plus(feesUSD);
-  // lbPairDayData.save();
+  lbPair.txCount = lbPair.txCount.plus(BIG_INT_ONE);
+  if (isTokenX) {
+    lbPair.feesTokenX = lbPair.feesTokenX.plus(fees);
+  } else {
+    lbPair.feesTokenY = lbPair.feesTokenY.plus(fees);
+  }
+  lbPair.feesUSD = lbPair.feesUSD.plus(feesUSD);
+  lbPair.save();
 
-  // // update users accrued fees
-  // const bin = loadBin(lbPair, lbPair.activeId);
-  // const lbPairFeeParams = LBPairParameterSet.load(lbPair.id);
-  // if (lbPairFeeParams) {
-  //   const protocolSharePct = lbPairFeeParams.protocolSharePct;
-  //   updateUserAccruedFeesDataSingleToken(
-  //     lbPair,
-  //     bin,
-  //     fees,
-  //     protocolSharePct,
-  //     isTokenX,
-  //     event.block.timestamp
-  //   );
-  // }
+  const lbPairHourData = loadLBPairHourData(
+    event.block.timestamp,
+    lbPair as LBPair,
+    true
+  );
+  lbPairHourData.feesUSD = lbPairHourData.feesUSD.plus(feesUSD);
+  lbPairHourData.save();
 
-  // const transaction = loadTransaction(event);
+  const lbPairDayData = loadLBPairDayData(
+    event.block.timestamp,
+    lbPair as LBPair,
+    true
+  );
+  lbPairDayData.feesUSD = lbPairDayData.feesUSD.plus(feesUSD);
+  lbPairDayData.save();
 
-  // const flashloan = new Flash(
-  //   transaction.id.concat("#").concat(lbPair.txCount.toString())
-  // );
-  // flashloan.transaction = transaction.id;
-  // flashloan.timestamp = event.block.timestamp.toI32();
-  // flashloan.lbPair = lbPair.id;
-  // flashloan.sender = event.params.sender;
-  // flashloan.recipient = event.params.receiver;
-  // flashloan.origin = event.transaction.from;
-  // flashloan.token = isTokenX ? tokenX.id : tokenY.id;
-  // flashloan.amount = amount;
-  // flashloan.amountUSD = isTokenX
-  //   ? amount.times(tokenX.derivedAVAX.times(bundle.avaxPriceUSD))
-  //   : amount.times(tokenY.derivedAVAX.times(bundle.avaxPriceUSD));
-  // flashloan.fees = fees;
-  // flashloan.feesUSD = feesUSD;
-  // flashloan.logIndex = event.logIndex;
-  // flashloan.save();
+  // update users accrued fees
+  const bin = loadBin(lbPair, lbPair.activeId);
+  const lbPairFeeParams = LBPairParameterSet.load(lbPair.id);
+  if (lbPairFeeParams) {
+    const protocolSharePct = lbPairFeeParams.protocolSharePct;
+    updateUserAccruedFeesDataSingleToken(
+      lbPair,
+      bin,
+      fees,
+      protocolSharePct,
+      isTokenX,
+      event.block.timestamp
+    );
+  }
+
+  const transaction = loadTransaction(event);
+
+  const flashloan = new Flash(
+    transaction.id.concat("#").concat(lbPair.txCount.toString())
+  );
+  flashloan.transaction = transaction.id;
+  flashloan.timestamp = event.block.timestamp.toI32();
+  flashloan.lbPair = lbPair.id;
+  flashloan.sender = event.params.sender;
+  flashloan.recipient = event.params.receiver;
+  flashloan.origin = event.transaction.from;
+  flashloan.token = isTokenX ? tokenX.id : tokenY.id;
+  flashloan.amount = amount;
+  flashloan.amountUSD = isTokenX
+    ? amount.times(tokenX.derivedAVAX.times(bundle.avaxPriceUSD))
+    : amount.times(tokenY.derivedAVAX.times(bundle.avaxPriceUSD));
+  flashloan.fees = fees;
+  flashloan.feesUSD = feesUSD;
+  flashloan.logIndex = event.logIndex;
+  flashloan.save();
+
+  */
 }
 
-// export function handleCompositionFee(event: CompositionFee): void {
-//   const lbPair = loadLbPair(event.address);
+export function handleCompositionFee(event: CompositionFees): void {
+  const lbPair = loadLbPair(event.address);
 
-//   if (!lbPair) {
-//     return;
-//   }
+  if (!lbPair) {
+    return;
+  }
 
-//   // update pricing
-//   updateAvaxInUsdPricing();
-//   updateTokensDerivedAvax(lbPair, event.params.id);
+  // update pricing
+  updateAvaxInUsdPricing();
 
-//   // price bundle
-//   const bundle = loadBundle();
+  /*
 
-//   const tokenX = loadToken(Address.fromString(lbPair.tokenX));
-//   const tokenY = loadToken(Address.fromString(lbPair.tokenY));
-//   const tokenXPriceUSD = tokenX.derivedAVAX.times(bundle.avaxPriceUSD);
-//   const tokenYPriceUSD = tokenY.derivedAVAX.times(bundle.avaxPriceUSD);
+  updateTokensDerivedAvax(lbPair, event.params.id);
 
-//   const feesX = formatTokenAmountByDecimals(
-//     event.params.feesX,
-//     tokenX.decimals
-//   );
-//   const feesY = formatTokenAmountByDecimals(
-//     event.params.feesY,
-//     tokenY.decimals
-//   );
-//   const feesUSD = feesX
-//     .times(tokenX.derivedAVAX.times(bundle.avaxPriceUSD))
-//     .plus(feesY.times(tokenY.derivedAVAX.times(bundle.avaxPriceUSD)));
+  // price bundle
+  const bundle = loadBundle();
 
-//   const lbFactory = loadLBFactory();
-//   lbFactory.feesUSD = lbFactory.feesUSD.plus(feesUSD);
-//   lbFactory.feesAVAX = safeDiv(lbFactory.feesUSD, bundle.avaxPriceUSD);
-//   lbFactory.save();
+  const tokenX = loadToken(Address.fromString(lbPair.tokenX));
+  const tokenY = loadToken(Address.fromString(lbPair.tokenY));
+  const tokenXPriceUSD = tokenX.derivedAVAX.times(bundle.avaxPriceUSD);
+  const tokenYPriceUSD = tokenY.derivedAVAX.times(bundle.avaxPriceUSD);
 
-//   const traderJoeHourData = loadTraderJoeHourData(event.block.timestamp, false);
-//   traderJoeHourData.feesUSD = traderJoeHourData.feesUSD.plus(feesUSD);
-//   traderJoeHourData.save();
+  const feesX = formatTokenAmountByDecimals(
+    event.params.feesX,
+    tokenX.decimals
+  );
+  const feesY = formatTokenAmountByDecimals(
+    event.params.feesY,
+    tokenY.decimals
+  );
+  const feesUSD = feesX
+    .times(tokenX.derivedAVAX.times(bundle.avaxPriceUSD))
+    .plus(feesY.times(tokenY.derivedAVAX.times(bundle.avaxPriceUSD)));
 
-//   const traderJoeDayData = loadTraderJoeDayData(event.block.timestamp, false);
-//   traderJoeDayData.feesUSD = traderJoeDayData.feesUSD.plus(feesUSD);
-//   traderJoeDayData.save();
+  const lbFactory = loadLBFactory();
+  lbFactory.feesUSD = lbFactory.feesUSD.plus(feesUSD);
+  lbFactory.feesAVAX = safeDiv(lbFactory.feesUSD, bundle.avaxPriceUSD);
+  lbFactory.save();
 
-//   tokenX.feesUSD = tokenX.feesUSD.plus(feesX.times(tokenXPriceUSD));
-//   tokenX.save();
+  const traderJoeHourData = loadTraderJoeHourData(event.block.timestamp, false);
+  traderJoeHourData.feesUSD = traderJoeHourData.feesUSD.plus(feesUSD);
+  traderJoeHourData.save();
 
-//   tokenY.feesUSD = tokenY.feesUSD.plus(feesY.times(tokenYPriceUSD));
-//   tokenY.save();
+  const traderJoeDayData = loadTraderJoeDayData(event.block.timestamp, false);
+  traderJoeDayData.feesUSD = traderJoeDayData.feesUSD.plus(feesUSD);
+  traderJoeDayData.save();
 
-//   const tokenXHourData = loadTokenHourData(
-//     event.block.timestamp,
-//     tokenX as Token,
-//     false
-//   );
-//   tokenXHourData.feesUSD = tokenXHourData.feesUSD.plus(
-//     feesX.times(tokenXPriceUSD)
-//   );
-//   tokenXHourData.save();
+  tokenX.feesUSD = tokenX.feesUSD.plus(feesX.times(tokenXPriceUSD));
+  tokenX.save();
 
-//   const tokenYHourData = loadTokenHourData(
-//     event.block.timestamp,
-//     tokenY as Token,
-//     false
-//   );
-//   tokenYHourData.feesUSD = tokenYHourData.feesUSD.plus(
-//     feesY.times(tokenYPriceUSD)
-//   );
-//   tokenYHourData.save();
+  tokenY.feesUSD = tokenY.feesUSD.plus(feesY.times(tokenYPriceUSD));
+  tokenY.save();
 
-//   const tokenXDayData = loadTokenDayData(
-//     event.block.timestamp,
-//     tokenX as Token,
-//     false
-//   );
-//   tokenXDayData.feesUSD = tokenXDayData.feesUSD.plus(
-//     feesX.times(tokenXPriceUSD)
-//   );
-//   tokenXDayData.save();
+  const tokenXHourData = loadTokenHourData(
+    event.block.timestamp,
+    tokenX as Token,
+    false
+  );
+  tokenXHourData.feesUSD = tokenXHourData.feesUSD.plus(
+    feesX.times(tokenXPriceUSD)
+  );
+  tokenXHourData.save();
 
-//   const tokenYDayData = loadTokenDayData(
-//     event.block.timestamp,
-//     tokenX as Token,
-//     false
-//   );
-//   tokenYDayData.feesUSD = tokenYDayData.feesUSD.plus(
-//     feesY.times(tokenYPriceUSD)
-//   );
-//   tokenYDayData.save();
+  const tokenYHourData = loadTokenHourData(
+    event.block.timestamp,
+    tokenY as Token,
+    false
+  );
+  tokenYHourData.feesUSD = tokenYHourData.feesUSD.plus(
+    feesY.times(tokenYPriceUSD)
+  );
+  tokenYHourData.save();
 
-//   lbPair.feesTokenX = lbPair.feesTokenX.plus(feesX);
-//   lbPair.feesTokenY = lbPair.feesTokenY.plus(feesY);
-//   lbPair.feesUSD = lbPair.feesUSD.plus(feesUSD);
-//   lbPair.save();
+  const tokenXDayData = loadTokenDayData(
+    event.block.timestamp,
+    tokenX as Token,
+    false
+  );
+  tokenXDayData.feesUSD = tokenXDayData.feesUSD.plus(
+    feesX.times(tokenXPriceUSD)
+  );
+  tokenXDayData.save();
 
-//   const lbPairHourData = loadLBPairHourData(
-//     event.block.timestamp,
-//     lbPair as LBPair,
-//     false
-//   );
-//   lbPairHourData.feesUSD = lbPairHourData.feesUSD.plus(feesUSD);
-//   lbPairHourData.save();
+  const tokenYDayData = loadTokenDayData(
+    event.block.timestamp,
+    tokenX as Token,
+    false
+  );
+  tokenYDayData.feesUSD = tokenYDayData.feesUSD.plus(
+    feesY.times(tokenYPriceUSD)
+  );
+  tokenYDayData.save();
 
-//   const lbPairDayData = loadLBPairDayData(
-//     event.block.timestamp,
-//     lbPair as LBPair,
-//     false
-//   );
-//   lbPairDayData.feesUSD = lbPairDayData.feesUSD.plus(feesUSD);
-//   lbPairDayData.save();
+  lbPair.feesTokenX = lbPair.feesTokenX.plus(feesX);
+  lbPair.feesTokenY = lbPair.feesTokenY.plus(feesY);
+  lbPair.feesUSD = lbPair.feesUSD.plus(feesUSD);
+  lbPair.save();
 
-//   // update users accrued fees
-//   const bin = loadBin(lbPair, event.params.id);
-//   const lbPairFeeParams = LBPairParameterSet.load(lbPair.id);
-//   if (lbPairFeeParams) {
-//     const protocolSharePct = lbPairFeeParams.protocolSharePct;
-//     updateUserAccruedFeesDataBothTokens(
-//       lbPair,
-//       bin,
-//       feesX,
-//       feesY,
-//       protocolSharePct,
-//       event.block.timestamp
-//     );
-//   }
-// }
+  const lbPairHourData = loadLBPairHourData(
+    event.block.timestamp,
+    lbPair as LBPair,
+    false
+  );
+  lbPairHourData.feesUSD = lbPairHourData.feesUSD.plus(feesUSD);
+  lbPairHourData.save();
+
+  const lbPairDayData = loadLBPairDayData(
+    event.block.timestamp,
+    lbPair as LBPair,
+    false
+  );
+  lbPairDayData.feesUSD = lbPairDayData.feesUSD.plus(feesUSD);
+  lbPairDayData.save();
+
+  // update users accrued fees
+  const bin = loadBin(lbPair, event.params.id);
+  const lbPairFeeParams = LBPairParameterSet.load(lbPair.id);
+  if (lbPairFeeParams) {
+    const protocolSharePct = lbPairFeeParams.protocolSharePct;
+    updateUserAccruedFeesDataBothTokens(
+      lbPair,
+      bin,
+      feesX,
+      feesY,
+      protocolSharePct,
+      event.block.timestamp
+    );
+  }
+
+  */
+}
 
 export function handleLiquidityAdded(event: DepositedToBins): void {
   const lbPair = loadLbPair(event.address);

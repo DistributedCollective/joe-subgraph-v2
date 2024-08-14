@@ -86,10 +86,10 @@ dataSources:
       eventHandlers:
         - event: Swap(indexed address,indexed address,uint24,bytes32,bytes32,uint24,bytes32,bytes32)
           handler: handleSwap
-      #   - event: FlashLoan(indexed address,indexed address,address,uint256,uint256)
-      #     handler: handleFlashLoan
-      #   - event: CompositionFee(indexed address,indexed address,indexed uint256,uint256,uint256)
-      #     handler: handleCompositionFee
+        - event: FlashLoan(indexed address,indexed address,uint24,bytes32,bytes32,bytes32)
+          handler: handleFlashLoan
+        - event: CompositionFees(indexed address,uint24,bytes32,bytes32)
+          handler: handleCompositionFee
         - event: DepositedToBins(indexed address,indexed address,uint256[],bytes32[])
           handler: handleLiquidityAdded
         - event: WithdrawnFromBins(indexed address,indexed address,uint256[],bytes32[])
@@ -100,6 +100,6 @@ dataSources:
       #     handler: handleProtocolFeesCollected
       #   - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
       #     handler: handleTransferSingle
-      #   - event: TransferBatch(indexed address,indexed address,indexed address,uint256[],uint256[])
-      #     handler: handleTransferBatch
+        - event: TransferBatch(indexed address,indexed address,indexed address,uint256[],uint256[])
+          handler: handleTransferBatch
       file: ./src/lbPair.ts
