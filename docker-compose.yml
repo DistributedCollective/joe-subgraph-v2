@@ -22,7 +22,7 @@ services:
       postgres_db: postgres
       ipfs: 'ipfs:5001'
       # Change next line if you want to connect to a different JSON-RPC endpoint
-      ethereum: 'optimism-sepolia:https://testnet.rpc.gobob.xyz'
+      ethereum: 'optimism-sepolia:https://bob-sepolia.rpc.gobob.xyz'
       GRAPH_LOG: 'debug'
       # GRAPH_GRAPHQL_QUERY_TIMEOUT: ''
       # GRAPH_SQL_STATEMENT_TIMEOUT: ''
